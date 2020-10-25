@@ -62,7 +62,17 @@ The Structured Query Language (SQL) is the standard user and application program
   2. Sakila database(For practice in free time)
   3. AWS Cloud RDB
 
+### AWS RDB
+  1. Main using MySQL workbench operate table in AWS RDB
+  2. Table creation, addition, deletion and modification.
 
 ### SQL Query and SQL Database  Related Operations
    W3 SCHOOL
    https://www.w3schools.com/sql/sql_groupby.asp
+   
+My Perception and Experience
+----------------------------
+Git is used every day during the internship, uploading work content, assigning work tasks, updating work content, etc. Very convenient tool.
+As the most basic information extraction, query, and modification language, SQL is very easy to learn and use, and is widely used in data analysis and other fields.
+I did a lot of database basic exercises (collected in the learning material) during the learning of SQL, basic operations, the use of fixed formats, table joins, subqueries, table changes, column additions, changes, etc.
+In the actual internship process, I found that I would not just write SQL language, but SQL is used in tasks, such as extracting data from the database and subsequent data cleaning. When connecting the web front-end and AWS data and interacting with information, you need to use SQL language to realize query, write to the database, and real-time update of some information. It is just a step in the task, so SQL must be used skillfully. The independent part needs to be used in conjunction with other languages to complete the task.
