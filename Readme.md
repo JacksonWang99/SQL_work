@@ -32,21 +32,37 @@ The Structured Query Language (SQL) is the standard user and application program
 
 ### SQL basic
 
-Master SQL query keywords for most of the common queries!
+    Master SQL query keywords for most of the common queries!
 
-SELECT (DISTINCT) CONCAT(), COUNT(), SUM(), LENGTH(), MAX(), MIN(), AVG(), CASE WHEN... THEN... ELSE.. END AS
+    SELECT (DISTINCT) CONCAT(), COUNT(), SUM(), LENGTH(), MAX(), MIN(), AVG(), CASE WHEN... THEN... ELSE.. END AS
 
-FROM
+    FROM
 
-WHERE
+    Join  ....  using()
 
-GROUP BY HAVING
+    Join .... on ....
 
-ORDER BY (DESC)
+    WHERE  AND, OR, IS NULL, is NOT NULL, LIKE '%a%', NOT Like, between  and ,
 
-operators:
+    GROUP BY HAVING
 
-+, -, *, /, =, <, >, NOT, AND (&), OR (|), IN, LIKE, BETWEEN ... AND ...
+    ORDER BY (DESC)
+    
+    LIMIT
+
+    operators:
+
+    +, -, *, /, =, <, >, NOT, AND (&), OR (|), IN, LIKE, BETWEEN ... AND ...
+    
+    MORE OPERATION 
+    Insert into,  update set, ADD, DELETE , IN, AS,
+
+### SQL Software
+  1. MySQL workbench
+  2. Sakila database(For practice in free time)
+  3. AWS Cloud RDB
 
 
-
+### SQL Query and SQL Database  Related Operations
+   W3 SCHOOL
+   https://www.w3schools.com/sql/sql_groupby.asp
