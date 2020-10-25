@@ -8,13 +8,13 @@ To understand GitHub, we must first have an understanding of Git. Git is an open
 
 So, Git is a version control system, but what does that mean? When developers create something (an app, for example), they make constant changes to the code, releasing new versions up to and after the first official (non-beta) release.
 
-## Installing Git
+### Installing Git
   1. https://git-scm.com/downloads
   2. Github Desktop(Recommend)
       Using easily, Fetch origin, easy commit, push origin
       Great interface
     
-## Git commands
+### Git commands
   1.  Git status -- Check your Git status
       Git add filename -- Add a file for staging
       Git add * -- Add all the files for the staging
@@ -28,7 +28,25 @@ So, Git is a version control system, but what does that mean? When developers cr
 
 SQL
 -----------------
+The Structured Query Language (SQL) is the standard user and application program interface for a relational database. Relational databases are easy to extend, and a new data category can be added after the original database creation without requiring that you modify all the existing applications.
 
+### SQL basic
+
+Master SQL query keywords for most of the common queries!
+
+SELECT (DISTINCT) CONCAT(), COUNT(), SUM(), LENGTH(), MAX(), MIN(), AVG(), CASE WHEN... THEN... ELSE.. END AS
+
+FROM
+
+WHERE
+
+GROUP BY HAVING
+
+ORDER BY (DESC)
+
+operators:
+
++, -, *, /, =, <, >, NOT, AND (&), OR (|), IN, LIKE, BETWEEN ... AND ...
 
 
 
