@@ -4,9 +4,11 @@ Introduction: This repository records my learning, history, use in real projects
 
 My Perception and Experience
 ----------------------------
-1.Git is used every day during the internship, uploading work content, assigning work tasks, updating work content, etc. Very convenient tool.
-2.As the most basic information extraction, query, and modification language, SQL is very easy to learn and use, and is widely used in data analysis and other fields.I did a lot of database basic exercises (collected in the learning material) during the learning of SQL, basic operations, the use of fixed formats, table joins, subqueries, table changes, column additions, changes, etc.
-3.In the actual internship process, I found that I would not just write SQL language, but SQL is used in tasks, such as extracting data from the database and subsequent data cleaning. When connecting the web front-end and AWS data and interacting with information, you need to use SQL language to realize query, write to the database, and real-time update of some information. It is just a step in the task, so SQL must be used skillfully. The independent part needs to be used in conjunction with other languages to complete the task.
+1. Git is used every day during the internship, uploading work content, assigning work tasks, updating work content, etc. Very convenient tool.
+
+2. As the most basic information extraction, query, and modification language, SQL is very easy to learn and use, and is widely used in data analysis and other fields.I did a lot of database basic exercises (collected in the learning material) during the learning of SQL, basic operations, the use of fixed formats, table joins, subqueries, table changes, column additions, changes, etc.
+
+3. In the actual internship process, I found that I would not just write SQL language, but SQL is used in tasks, such as extracting data from the database and subsequent data cleaning. When connecting the web front-end and AWS data and interacting with information, you need to use SQL language to realize query, write to the database, and real-time update of some information. It is just a step in the task, so SQL must be used skillfully. The independent part needs to be used in conjunction with other languages to complete the task.
 
 Git
 -----------------
