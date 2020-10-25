@@ -1,6 +1,7 @@
 SQL and Git
 =================
 Introduction: This repository records my learning, history, use in real projects and internships, and personal feelings about git operation and SOL language.
+
 Git
 -----------------
 To understand GitHub, we must first have an understanding of Git. Git is an open-source version control system. Git is similar to other version control systems—Subversion, CVS, and Mercurial to name a few.
