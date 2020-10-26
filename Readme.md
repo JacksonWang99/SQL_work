@@ -10,6 +10,8 @@ My Perception and Experience
 
 3. In the actual internship process, I found that I would not just write SQL language, but SQL is used in tasks, such as extracting data from the database and subsequent data cleaning. When connecting the web front-end and AWS data and interacting with information, you need to use SQL language to realize query, write to the database, and real-time update of some information. It is just a step in the task, so SQL must be used skillfully. The independent part needs to be used in conjunction with other languages to complete the task.
 
+4. 
+
 Git
 -----------------
 To understand GitHub, we must first have an understanding of Git. Git is an open-source version control system. Git is similar to other version control systems—Subversion, CVS, and Mercurial to name a few.
@@ -37,6 +39,16 @@ So, Git is a version control system, but what does that mean? When developers cr
 SQL
 -----------------
 The Structured Query Language (SQL) is the standard user and application program interface for a relational database. Relational databases are easy to extend, and a new data category can be added after the original database creation without requiring that you modify all the existing applications.
+
+### AWS RDB
+  1. Main using MySQL workbench operate table in AWS RDB
+  2. Table creation, addition, deletion and modification.
+  
+### Upload Real Data and Creat database by Workbench
+  1. Option 1 - Table Data Import Wizard
+      Go to database home_credit -> Table Data Import Wizard -> Browse to the table files -> Upload
+      Deal eith the real data(csv), Creat database by Workbench. We can do some operation check and get we want information. 
+  2. Option 2 - Manual import (faster but a bit tedious)
 
 ### SQL basic
 
@@ -70,9 +82,6 @@ The Structured Query Language (SQL) is the standard user and application program
   2. Sakila database(For practice in free time)
   3. AWS Cloud RDB
 
-### AWS RDB
-  1. Main using MySQL workbench operate table in AWS RDB
-  2. Table creation, addition, deletion and modification.
 
 ### SQL Query and SQL Database  Related Operations
    W3 SCHOOL
