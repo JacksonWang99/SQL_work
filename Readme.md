@@ -93,5 +93,11 @@ The Structured Query Language (SQL) is the standard user and application program
 ### SQL Query and SQL Database  Related Operations
    W3 SCHOOL
    https://www.w3schools.com/sql/sql_groupby.asp
+
+### Practice
+   1. W3 School
+   2. Course exercise
+   3. Leetcode   https://leetcode.com/problemset/database
+   4. Hackerrank https://www.hackerrank.com
    
 
