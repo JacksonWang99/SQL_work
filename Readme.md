@@ -35,6 +35,9 @@ So, Git is a version control system, but what does that mean? When developers cr
   
   However, These two ways have their advantages and disadvantages. Using toghter. It's a great tools in study and intern.
 
+### Git branch
+  1. Cooperation with group or partner on master branch
+  1. Great a new branch do your job, if these work are great and finished push to master branch
 
 SQL
 -----------------
@@ -62,7 +65,7 @@ The Structured Query Language (SQL) is the standard user and application program
 
     Join .... on ....
 
-    WHERE  AND, OR, IS NULL, is NOT NULL, LIKE '%a%', NOT Like, between  and ,
+    WHERE  AND, OR, IS NULL, is NOT NULL, LIKE '%a%', NOT Like, between  and , regexp '  ',
 
     GROUP BY HAVING
 
@@ -76,6 +79,10 @@ The Structured Query Language (SQL) is the standard user and application program
     
     MORE OPERATION 
     Insert into,  update set, ADD, DELETE , IN, AS,
+
+### Regex in MySQL
+  1. Online tool https://rubular.com/
+  2. https://dev.mysql.com/doc/refman/8.0/en/regexp.html
 
 ### SQL Software
   1. MySQL workbench
