@@ -165,7 +165,18 @@ Group by 操作
     表中删除一列
     ALTER TABLE Persons
 	DROP COLUMN Birthday;
-	
+
+
+# 创建一个新的数据库
+create database covid19;
+
+# 怎么导入一份新的数据 
+
+-- Go to database home_credit -> Table Data Import Wizard -> Browse to the table files -> Upload
+# 1. 新创建的数据库点击， 右键找到 Table Data Import Wizard，找到数据位置，然后上传数据
+# 2. 新的对话框，记得修改名称 -> next
+# 3. Configure Import Setting 不要更改直接 -> next 完成数据导入和表设置
+
 
 第二次班课作业练习
 -- 1. Select all the products in product category 1. How many in total?
