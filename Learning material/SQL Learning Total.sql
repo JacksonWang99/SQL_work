@@ -28,17 +28,23 @@ where not A =''  不包含
       A between 10 and 20 -- value of the Price column is between 10 and 20.
 	  A not between 10 and 20  -- Price column 不在 10 and 20
 
-group by 分组
+group by... having...  分组
+
 	后面跟列属性
     
-oder by 排序
+order by ... limit...  排序
 	order by city 按照city的字母顺序排序
     order by city desc 按照city的字母降序排序
     order by city asc  按照升序
     order by city,country 先按照city排序然后再按照country排序
 
-
-Limit 5 查看前5行
+Limit
+	Limit 5 查看前5行
+	-- get the second highest salary
+    select salary as SecondHighestSalary
+	from Employee
+	order by Salary desc
+	limit 1 Offset 1
 
 insert into 插入操作
 				  表名称    列属性名称
@@ -116,6 +122,8 @@ Join 操作
     RIGHT JOIN Customers
 	ON Orders.CustomerID=Customers.CustomerID;
 
+	join store using (store_id)  #表连接的方式 join ... using ...  也可以 join... on...
+	join film using (film_id)
 
 Group by 操作
 	-- List the number of customers in each country.
@@ -130,7 +138,31 @@ Group by 操作
     GROUP BY Country
     ORDER BY COUNT(CustomerID) DESC
 
+排序 MYSQL实现排名函数RANK，DENSE_RANK和ROW_NUMBER
+	图文链接： https://blog.csdn.net/u011726005/article/details/94592866
+	RANK并列跳跃排名，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，跳跃到总共的排名。
+    DENSE_RANK并列连续排序，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，依然按照连续数字排名。
+    ROW_NUMBER连续排名，即使相同的值，依旧按照连续数字进行排名。
+    
+    不分组跑【排名
+    连续排名
+    SELECT score,
+	ROW_NUMBER() OVER (ORDER BY score DESC) ranking
+	FROM score;
+    
+    并列跳跃排名
+	SELECT course_id, score,
+	RANK() OVER(ORDER BY score DESC)
+	FROM score;
+    
+    并列连续排名
+    SELECT course_id, score,
+	DENSE_RANK() OVER(ORDER BY score DESC) FROM score;
 
+	分组排名
+    
+    
+    
 创建数据库
 	-- Write the correct SQL statement to create a new database called testDB
     创建数据库
@@ -741,5 +773,8 @@ create database home_credit;
 # 出现Select Destination 界面，会自动检测到哪个数据库  Creat new table  -> configure Import Settings 界面 自动识别表格数据格式
 
 
+#####################
+#####  Leetcode #####
+#####################
 
 
