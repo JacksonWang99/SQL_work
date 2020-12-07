@@ -138,28 +138,6 @@ Group by 操作
     GROUP BY Country
     ORDER BY COUNT(CustomerID) DESC
 
-排序 MYSQL实现排名函数RANK，DENSE_RANK和ROW_NUMBER
-	图文链接： https://blog.csdn.net/u011726005/article/details/94592866
-	RANK并列跳跃排名，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，跳跃到总共的排名。
-    DENSE_RANK并列连续排序，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，依然按照连续数字排名。
-    ROW_NUMBER连续排名，即使相同的值，依旧按照连续数字进行排名。
-    
-    不分组跑【排名
-    连续排名
-    SELECT score,
-	ROW_NUMBER() OVER (ORDER BY score DESC) ranking
-	FROM score;
-    
-    并列跳跃排名
-	SELECT course_id, score,
-	RANK() OVER(ORDER BY score DESC)
-	FROM score;
-    
-    并列连续排名
-    SELECT course_id, score,
-	DENSE_RANK() OVER(ORDER BY score DESC) FROM score;
-
-	分组排名
     
     
     
@@ -776,5 +754,101 @@ create database home_credit;
 #####################
 #####  Leetcode #####
 #####################
+
+###########################################
+################ 高阶用法 ##################  
+
+-- 1. 高级排序 RANK，DENSE_RANK和ROW_NUMBER
+     # https://blog.csdn.net/u011726005/article/details/94592866
+use sakila;
+
+# 创建表格
+create table score(
+  student_id varchar(10),
+  course_id varchar(10),
+  score decimal(18,1)
+);
+
+# 插入数据
+insert into score values('01' , '01' , 80);
+insert into score values('01' , '02' , 90);
+insert into score values('01' , '03' , 99);
+insert into score values('02' , '01' , 70);
+insert into score values('02' , '02' , 60);
+insert into score values('02' , '03' , 80);
+insert into score values('03' , '01' , 80);
+insert into score values('03' , '02' , 80);
+insert into score values('03' , '03' , 80);
+insert into score values('04' , '01' , 50);
+insert into score values('04' , '02' , 30);
+insert into score values('04' , '03' , 20);
+insert into score values('05' , '01' , 76);
+insert into score values('05' , '02' , 87);
+insert into score values('06' , '01' , 31);
+insert into score values('06' , '03' , 34);
+insert into score values('07' , '02' , 89);
+insert into score values('07' , '03' , 98);
+insert into score values('08' , '02' , 89);
+insert into score values('09' , '02' , 89);
+
+select * from score;
+
+	# RANK并列跳跃排名，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，跳跃到总共的排名。
+    # DENSE_RANK并列连续排序，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，依然按照连续数字排名。
+    # ROW_NUMBER连续排名，即使相同的值，依旧按照连续数字进行排名。
+    
+-- 不分组排名
+
+    # 连续排名   使用ROW_NUMBER实现
+
+    SELECT score,
+	ROW_NUMBER() OVER (ORDER BY score DESC) ranking
+	FROM score;
+    
+    # 并列跳跃排名 使用RANK实现
+	SELECT course_id, score,
+	RANK() OVER(ORDER BY score DESC)
+	FROM score;
+    
+    # 并列连续排名  使用DENSE_RANK实现
+    SELECT course_id, score,
+	DENSE_RANK() OVER(ORDER BY score DESC) FROM score;
+
+-- 分组排名
+	# 分组连续排名  使用ROW_NUMBER实现
+	SELECT course_id, score,
+	ROW_NUMBER() OVER (PARTITION BY course_id ORDER BY score DESC) ranking FROM score;
+
+	# 分组并列跳跃排名 使用RANK实现
+	SELECT course_id, score,
+	RANK() OVER(PARTITION BY course_id ORDER BY score DESC)
+	FROM score;
+    
+    # 分组并列连续排名  使用DENSE_RANK实现
+	SELECT course_id, score,
+	DENSE_RANK() OVER(PARTITION BY course_id ORDER BY score DESC)
+	FROM score;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
