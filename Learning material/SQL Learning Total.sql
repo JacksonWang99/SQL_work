@@ -26,22 +26,25 @@ where not A =''  不包含
 	  A Like '[acs]%'-- where the first letter of the City is an "a" or a "c" or an "s"
                      -- 以a c s 开头
       A Like '%[acs]' -- 以a c s 结尾
-      A Like '%[acs]%' -- 同时以a c s 开头和结尾            
+      A Like '[acs]%[acs]' -- 同时以a c s 开头和结尾    
+      A not like '[aeiou]%' or A not like '%[aeiou]'  --  do not start with vowels or do not end with vowels.
 	  A Like '[^acs]%' -- 不以 "a" or a "c" or an "s"开头
       A Like '[a-f]%'-- where the first letter of the City starts with anything from an "a" to an "f".
       
       A between 10 and 20 -- value of the Price column is between 10 and 20.
 	  A not between 10 and 20  -- Price column 不在 10 and 20
-      mod(id, 2) = 1  等于1 是奇数，等于0 是偶数
+      
 group by... having...  分组
 
 	后面跟列属性
     
 order by ... limit...  排序
 	order by city 按照city的字母顺序排序
-    order by city desc 按照city的字母降序排序
-    order by city asc  按照升序
+    order by city desc 按照city的字母降序排序  字母倒序
+    order by city asc  按照升序  字母升序
     order by city,country 先按照city排序然后再按照country排序
+	order by SUBSTR(NAME,-3,3)  substr(str,pos,len) str是目标属性，pos 是开始位置，len 是选择的长度
+             是按单词最后三位字母排序
 
 Limit
 	Limit 5 查看前5行
@@ -143,8 +146,16 @@ Group by 操作
     GROUP BY Country
     ORDER BY COUNT(CustomerID) DESC
 
-    
-    
+
+SQL 中的函数
+1. CONCAT 函数用于将两个字符串连接为一个字符串
+# SELECT CONCAT('FIRST ', 'SECOND')   结果为 FIRST SECOND
+2. mod(id, 2) = 1  等于1 是奇数，等于0 是偶数
+3. count() 计数
+4. substring(str,pos,len) str是目标属性，pos 是开始位置，len 是选择的长度
+5. distinct() 去重
+6. AVG(列名) 取平均值
+7. SUM()   求和    
     
 创建数据库
 	-- Write the correct SQL statement to create a new database called testDB
@@ -760,14 +771,14 @@ create database home_credit;
 #####  Leetcode #####
 #####################
 
-# 一共有20道题
+# 一共有20道题  https://leetcode.com/problemset/database/?status=Solved
 
 
 
 #######################
 #####  HackerRank #####
 #######################
-
+# https://www.hackerrank.com/domains/sql
 -- 1. Find the difference between the total number of CITY entries in the table and the number of distinct CITY entries in the table.
 	SELECT COUNT(CITY)- COUNT(DISTINCT(CITY))
 	FROM STATION;
@@ -781,6 +792,141 @@ create database home_credit;
 	select city, length(city) from station
 	order by length(city) desc
 	limit 1;
+
+-- 3. case 用法
+    # 判断三角形
+	#  Equilateral: It's a triangle with  sides of equal length.
+	# Isosceles: It's a triangle with  sides of equal length.
+	# Scalene: It's a triangle with  sides of differing lengths.
+	# Not A Triangle: The given values of A, B, and C don't form a triangle.
+	
+#CASE语句有两种形式：第一种评估一个或多个条件，并返回第一个符合条件的结果。 如果没有条件是符合的，则返回ELSE子句部分的结果，如果没有ELSE部分，则返回NULL：
+# 注意 case...end   when..then..else 不要缺少关键词。
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
+
+select case 
+        when A + B > C and B + C > A and A + C > B then
+            case
+                when A=B and B = C then 'Equilateral'
+                when A=B or A=C or B=C then 'Isosceles'
+                else 'Scalene'
+            end
+		else 'Not A Triangle'
+        end
+from TRIANGLES
+
+-- 4. Query an alphabetically ordered list of all names in OCCUPATIONS, immediately 
+	#followed by the first letter of each profession as a parenthetical 
+    # (i.e.: enclosed in parentheses). For example: AnActorName(A), ADoctorName(D), AProfessorName(P), and ASingerName(S).
+	# Query the number of ocurrences of each occupation in OCCUPATIONS. Sort the occurrences in 
+    # ascending order, and output them in the following format:
+	# There are a total of [occupation_count] [occupation]s.
+	# where [occupation_count] is the number of occurrences of an occupation in OCCUPATIONS 
+    # and [occupation] is the lowercase occupation name. If more than one Occupation has the 
+    # same [occupation_count], they should be ordered alphabetically.
+	'''
+	Sample Output
+
+	Ashely(P)
+	Christeen(P)
+	Jane(A)
+	Jenny(D)
+	Julia(A)
+	Ketty(P)
+	Maria(A)
+	Meera(S)
+	Priya(S)
+	Samantha(D)
+	There are a total of 2 doctors.
+	There are a total of 2 singers.
+	There are a total of 3 actors.
+	There are a total of 3 professors.
+	'''
+# CONCAT 函数用于将两个字符串连接为一个字符串
+# SELECT CONCAT('FIRST ', 'SECOND') 结果为  FIRST SECOND
+#  SELECT CONCAT(id, name, work_date)
+   FROM employee_tbl;
+# 结果为  1John2007-01-24 
+
+
+select concat(Name,'(',Substring(Occupation,1,1),')') as Name
+
+from occupations
+
+Order by Name 
+
+select concat('There are a total of',' ',count(occupation),' ',lower(occupation),'s.') as total
+
+from occupations
+
+group by occupation
+
+order by total asc;
+
+-- 5. 表格翻转，重新组合
+# Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically 
+# and displayed underneath its corresponding Occupation. The output column headers 
+# should be Doctor, Professor, Singer, and Actor, respectively.
+# Note: Print NULL when there are no more names corresponding to an occupation.
+
+SELECT 
+MIN(CASE WHEN Occupation = 'Doctor' THEN Name ELSE NULL END) AS Doctor,
+MIN(CASE WHEN Occupation = 'Professor' THEN Name ELSE NULL END) AS Professor,
+MIN(CASE WHEN Occupation = 'Singer' THEN Name ELSE NULL END) AS Singer,
+MIN(CASE WHEN Occupation = 'Actor' THEN Name ELSE NULL END) AS Actor
+FROM (
+  SELECT a.Occupation,
+         a.Name,
+         (SELECT COUNT(*) 
+            FROM Occupations AS b
+            WHERE a.Occupation = b.Occupation AND a.Name > b.Name) AS rank
+  FROM Occupations AS a
+) AS c
+GROUP BY c.rank;
+
+-- 6. Binary Tree Nodes 二进制树
+# You are given a table, BST, containing two columns: N and P, where N represents the value of 
+# a node in Binary Tree, and P is the parent of N.
+# Write a query to find the node type of Binary Tree ordered by the value of the node. Output one of the following for each node:
+
+# Root: If node is root node.
+# Leaf: If node is leaf node.
+# Inner: If node is neither root nor leaf node.
+# Sample Output
+
+# 1 Leaf
+# 2 Inner
+# 3 Leaf
+# 5 Root
+# 6 Leaf
+# 8 Inner
+# 9 Leaf
+SELECT CASE
+    WHEN P IS NULL THEN CONCAT(N, ' Root')
+    WHEN N IN (SELECT DISTINCT P FROM BST) THEN CONCAT(N, ' Inner')
+    ELSE CONCAT(N, ' Leaf')
+    END
+FROM BST
+ORDER BY N ASC
+
+-- 7. Given the table schemas below, write a query to print the company_code, founder name, 
+# total number of lead managers, total number of senior managers, total number of managers, 
+# and total number of employees. Order your output by ascending company_code.
+
+select c.company_code, c.founder, 
+    count(distinct e.lead_manager_code), count(distinct e.senior_manager_code),
+    count(distinct e.manager_code),count(distincte.employee_code)
+from company c
+inner join employee e on e.company_code = c.company_code
+group by c.company_code,c.founder
+order by c.company_code;
+
+
 
 
 
@@ -861,7 +1007,32 @@ select * from score;
 	FROM score;
 
 
+-- 2. case 用法
+    # 判断三角形
+	#  Equilateral: It's a triangle with  sides of equal length.
+	# Isosceles: It's a triangle with  sides of equal length.
+	# Scalene: It's a triangle with  sides of differing lengths.
+	# Not A Triangle: The given values of A, B, and C don't form a triangle.
+	
+#CASE语句有两种形式：第一种评估一个或多个条件，并返回第一个符合条件的结果。 如果没有条件是符合的，则返回ELSE子句部分的结果，如果没有ELSE部分，则返回NULL：
+# 注意 case...end   when..then..else 不要缺少关键词。
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
 
+select case 
+        when A + B > C and B + C > A and A + C > B then
+            case
+                when A=B and B = C then 'Equilateral'
+                when A=B or A=C or B=C then 'Isosceles'
+                else 'Scalene'
+            end
+		else 'Not A Triangle'
+        end
+from TRIANGLES
 
 
 
