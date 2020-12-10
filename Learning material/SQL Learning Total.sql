@@ -1,6 +1,8 @@
 -- 总结
--- SQL Query 和 SQL Database 相关操作 
+-- SQL Query 和 SQL Database 相关操作  MS SQL serve
 -- https://www.w3schools.com/sql/sql_groupby.asp
+-- Leetcode 用户名 JacksonWZM
+-- hackerrank 用户名 Jackson WZM  z5140192
 select  distinct() 去重
 		MIN()   取最小值
         MAX()   取最大值
@@ -23,11 +25,14 @@ where not A =''  不包含
 	  A Like '_a%'  -- where the second letter of the City is an "a". 第二个字母是a
 	  A Like '[acs]%'-- where the first letter of the City is an "a" or a "c" or an "s"
                      -- 以a c s 开头
+      A Like '%[acs]' -- 以a c s 结尾
+      A Like '%[acs]%' -- 同时以a c s 开头和结尾            
+	  A Like '[^acs]%' -- 不以 "a" or a "c" or an "s"开头
       A Like '[a-f]%'-- where the first letter of the City starts with anything from an "a" to an "f".
-      A Like '[^acs]%' -- 不以 "a" or a "c" or an "s"开头
+      
       A between 10 and 20 -- value of the Price column is between 10 and 20.
 	  A not between 10 and 20  -- Price column 不在 10 and 20
-
+      mod(id, 2) = 1  等于1 是奇数，等于0 是偶数
 group by... having...  分组
 
 	后面跟列属性
@@ -754,6 +759,32 @@ create database home_credit;
 #####################
 #####  Leetcode #####
 #####################
+
+# 一共有20道题
+
+
+
+#######################
+#####  HackerRank #####
+#######################
+
+-- 1. Find the difference between the total number of CITY entries in the table and the number of distinct CITY entries in the table.
+	SELECT COUNT(CITY)- COUNT(DISTINCT(CITY))
+	FROM STATION;
+-- 2. Query the two cities in STATION with the shortest and longest CITY names
+    # If there is more than one smallest or largest city, choose the one that comes first when ordered alphabetically.
+	# 做两次选择
+	select city, length(city) 
+	from station
+	order by length(city),city asc
+	limit 1;
+	select city, length(city) from station
+	order by length(city) desc
+	limit 1;
+
+
+
+
 
 ###########################################
 ################ 高阶用法 ##################  
