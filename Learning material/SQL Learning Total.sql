@@ -34,7 +34,9 @@ where not A =''  不包含
       A between 10 and 20 -- value of the Price column is between 10 and 20.
 	  A not between 10 and 20  -- Price column 不在 10 and 20
       
-group by... having...  分组
+group by... 分组
+
+having...  
 
 	后面跟列属性
     
@@ -148,14 +150,45 @@ Group by 操作
 
 
 SQL 中的函数
-1. CONCAT 函数用于将两个字符串连接为一个字符串
-# SELECT CONCAT('FIRST ', 'SECOND')   结果为 FIRST SECOND
+1. Concat 函数用于将两个字符串连接为一个字符串 # SELECT CONCAT('FIRST ', 'SECOND')   结果为 FIRST SECOND
+		 以及固定的语言文字输出
 2. mod(id, 2) = 1  等于1 是奇数，等于0 是偶数
 3. count() 计数
+3. lower() 转为小写字母
 4. substring(str,pos,len) str是目标属性，pos 是开始位置，len 是选择的长度
+	  用于字符串截取，第一个，最后一个字母，后三位排序等等功能
 5. distinct() 去重
-6. AVG(列名) 取平均值
-7. SUM()   求和    
+6. AVG(列名) 取平均值, abs() 绝对值函数
+7. SUM()   求和   
+8. round(x)  向下取整 down to the nearest integer. Truncate your answer to 4 decimal places.
+   round(x,y) 函数返回最接近于参数x的数，其值保留到小数点后面y位，若y为负值，则将保留x值到小数点左边y位。
+   Ceiling()  向上取整 round it up to the next integer.
+   FLOOR() - rounded down to the nearest integer 返回最大整数，使这个整数小于或等于指定数的数值运算。
+9. replace(title,'w3cschool','hello')  数据库表所有title字段里的w3cschool字符串替换成hello
+10. sqrt()平方根函数
+11. Power(x,y) 函数返回x的y次乘方的结果值
+12. SQUARE(x)函数返回指定浮点值x的平方
+13. EXP(x)函数返回e的x乘方后的值。
+14. SIGN(x)返回参数的符号，x的值为负、零或正时，返回结果依次为-1、0或1
+15. median 中位数
+	Oracle 有直接的median() 函数
+	SELECT ROUND(MEDIAN(Lat_N), 4)
+	FROM Station;
+	但是Mysql 没有直接的中位数函数 需要自己做出来的中位数函数
+	计算 中位数 模板
+	select avg(c.s_score) 
+	from(
+		   select a.s_score 
+		   from score a,score b  表复制一份
+		   where a.c_id=b.c_id and a.c_id='02' 额外的条件，看具体情况进行删除
+		   group by a.s_score
+		   having sum(case when a.s_score=b.s_score then 1 else 0 end)
+				  >= abs(sum(sign(a.s_score-b.s_score)))
+		   )c;
+
+16.
+    
+    
     
 创建数据库
 	-- Write the correct SQL statement to create a new database called testDB
@@ -829,7 +862,7 @@ from TRIANGLES
 	# where [occupation_count] is the number of occurrences of an occupation in OCCUPATIONS 
     # and [occupation] is the lowercase occupation name. If more than one Occupation has the 
     # same [occupation_count], they should be ordered alphabetically.
-	'''
+/*
 	Sample Output
 
 	Ashely(P)
@@ -852,33 +885,109 @@ from TRIANGLES
 #  SELECT CONCAT(id, name, work_date)
    FROM employee_tbl;
 # 结果为  1John2007-01-24 
+*/
 
-
+# 第一部分的输出
 select concat(Name,'(',Substring(Occupation,1,1),')') as Name
-
 from occupations
-
 Order by Name 
 
+#注意拼接时候，之间的空格和标点符号，字母大小
 select concat('There are a total of',' ',count(occupation),' ',lower(occupation),'s.') as total
-
 from occupations
-
 group by occupation
-
 order by total asc;
 
 -- 5. 表格翻转，重新组合
+/*
 # Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically 
 # and displayed underneath its corresponding Occupation. The output column headers 
 # should be Doctor, Professor, Singer, and Actor, respectively.
 # Note: Print NULL when there are no more names corresponding to an occupation.
+# Occupation will only contain one of the following values: Doctor, Professor, Singer or Actor.
+
+Sample Output
+Jenny    Ashley     Meera  Jane
+Samantha Christeen  Priya  Julia
+NULL     Ketty      NULL   Maria
+Explanation
+
+The first column is an alphabetically ordered list of Doctor names.
+The second column is an alphabetically ordered list of Professor names.
+The third column is an alphabetically ordered list of Singer names.
+The fourth column is an alphabetically ordered list of Actor names.
+The empty cell data for columns with less than the maximum number of names per 
+occupation (in this case, the Professor and Actor columns) are filled with NULL values.
+*/
+SELECT 
+    # 选择出对应的职位作为表头
+	MIN(CASE WHEN Occupation = 'Doctor' THEN Name ELSE NULL END) AS Doctor,
+	MIN(CASE WHEN Occupation = 'Professor' THEN Name ELSE NULL END) AS Professor,
+	MIN(CASE WHEN Occupation = 'Singer' THEN Name ELSE NULL END) AS Singer,
+	MIN(CASE WHEN Occupation = 'Actor' THEN Name ELSE NULL END) AS Actor
+FROM (
+	  SELECT a.Occupation, a.Name,
+			 (SELECT COUNT(*) 
+			  FROM Occupations AS b
+			  WHERE a.Occupation = b.Occupation AND a.Name > b.Name) AS rank
+	  FROM Occupations as a
+	 ) AS c
+GROUP BY c.rank;
+
+/* 分步解释如下
+中间的子查询 创建出来了一个新的表
+This query creates the ranking value, smaller values are in alphabetical order.
+  SELECT a.Occupation,
+         a.Name,
+         (SELECT COUNT(*) 
+            FROM Occupations AS b
+            WHERE a.Occupation = b.Occupation AND a.Name > b.Name) AS rank
+            # 创建了新的一列命名为 rank
+  FROM Occupations AS a
+
+这个新的表长这样
++------------+-----------+------+
+| Occupation | Name      | rank |
++------------+-----------+------+
+| Doctor     | Samantha  |    1 |
+| Actor      | Julia     |    1 |
+| Actor      | Maria     |    2 |
+| Singer     | Meera     |    0 |
+
+And then you can rotate row and column by this query
+SELECT 
+rank,
+CASE WHEN Occupation = 'Doctor' THEN Name ELSE NULL END AS Doctor,
+CASE WHEN Occupation = 'Professor' THEN Name ELSE NULL END AS Professor,
+CASE WHEN Occupation = 'Singer' THEN Name ELSE NULL END AS Singer,
+CASE WHEN Occupation = 'Actor' THEN Name ELSE NULL END AS Actor
+FROM (
+  SELECT a.Occupation,
+         a.Name,
+         (SELECT COUNT(*) 
+            FROM Occupations AS b
+            WHERE a.Occupation = b.Occupation AND a.Name > b.Name) AS rank
+  FROM Occupations AS a
+) AS c
+
++------+----------+-----------+--------+-------+
+| rank | Doctor   | Professor | Singer | Actor |
++------+----------+-----------+--------+-------+
+|    1 | Samantha | NULL      | NULL   | NULL  |
+|    1 | NULL     | NULL      | NULL   | Julia |
+|    2 | NULL     | NULL      | NULL   | Maria |
+|    0 | NULL     | NULL      | Meera  | NULL  |
+|    0 | NULL     | Ashely    | NULL   | NULL  |
+
+Doctor and other occupations columns contain only a single value for each ranks, 
+so you can reduce null value by MAX or MIN aggregate function with group by rank value.
 
 SELECT 
-MIN(CASE WHEN Occupation = 'Doctor' THEN Name ELSE NULL END) AS Doctor,
-MIN(CASE WHEN Occupation = 'Professor' THEN Name ELSE NULL END) AS Professor,
-MIN(CASE WHEN Occupation = 'Singer' THEN Name ELSE NULL END) AS Singer,
-MIN(CASE WHEN Occupation = 'Actor' THEN Name ELSE NULL END) AS Actor
+rank,
+MAX(CASE WHEN Occupation = 'Doctor' THEN Name ELSE NULL END) AS Doctor,
+MAX(CASE WHEN Occupation = 'Professor' THEN Name ELSE NULL END) AS Professor,
+MAX(CASE WHEN Occupation = 'Singer' THEN Name ELSE NULL END) AS Singer,
+MAX(CASE WHEN Occupation = 'Actor' THEN Name ELSE NULL END) AS Actor
 FROM (
   SELECT a.Occupation,
          a.Name,
@@ -888,6 +997,18 @@ FROM (
   FROM Occupations AS a
 ) AS c
 GROUP BY c.rank;
+
++------+----------+-----------+--------+-------+
+| rank | Doctor   | Professor | Singer | Actor |
++------+----------+-----------+--------+-------+
+|    0 | Jenny    | Ashely    | Meera  | Jane  |
+|    1 | Samantha | Christeen | Priya  | Julia |
+|    2 | NULL     | Ketty     | NULL   | Maria |
++------+----------+-----------+--------+-------+
+*/
+
+
+
 
 -- 6. Binary Tree Nodes 二进制树
 # You are given a table, BST, containing two columns: N and P, where N represents the value of 
@@ -914,24 +1035,270 @@ SELECT CASE
 FROM BST
 ORDER BY N ASC
 
--- 7. Given the table schemas below, write a query to print the company_code, founder name, 
+-- 7. New Companies
+# Given the table schemas below, write a query to print the company_code, founder name, 
 # total number of lead managers, total number of senior managers, total number of managers, 
 # and total number of employees. Order your output by ascending company_code.
 
 select c.company_code, c.founder, 
     count(distinct e.lead_manager_code), count(distinct e.senior_manager_code),
-    count(distinct e.manager_code),count(distincte.employee_code)
+    count(distinct e.manager_code),count(distinct e.employee_code)
+# 表连接没问题
 from company c
 inner join employee e on e.company_code = c.company_code
+
+# 不太明白group by 为什么需要两个属性
 group by c.company_code,c.founder
+# 直接按照 company_code 进行排序
 order by c.company_code;
 
 
+-- 8.  New company
+#We define an employee's total earnings to be their monthly  
+# worked, and the maximum total earnings to be the maximum total 
+# earnings for any employee in the Employee table. 
+# Write a query to find the maximum total earnings for all employees 
+# as well as the total number of employees who have maximum total earnings. 
+# Then print these values as  space-separated integers.
+# 创建了一个新的一列，然后按照earnings分组，排序 取第一个 
+# count(*) 表示相同的有几个
+select  salary * months AS earnings, count(*)
+from employee
+group by earnings
+order by earnings desc
+limit 1
+
+-- 9. Weather Observation Station 18
+/*
+这题不难
+Consider P1(a,b) and P2(c,d) to be two points on a 2D plane.
+
+ a happens to equal the minimum value in Northern Latitude (LAT_N in STATION).
+ b happens to equal the minimum value in Western Longitude (LONG_W in STATION).
+ c happens to equal the maximum value in Northern Latitude (LAT_N in STATION).
+ d happens to equal the maximum value in Western Longitude (LONG_W in STATION).
+Query the Manhattan Distance between points P1 and P2 and round it to a scale of 4  decimal places.
+
+round() 函数用来四舍五入
+round(x)  向下取整 down to the nearest integer. Truncate your answer to 4 decimal places.
+round(x,y) 函数返回最接近于参数x的数，其值保留到小数点后面y位，若y为负值，则将保留x值到小数点左边y位。
+Ceiling()  向上取整 round it up to the next integer.
+FLOOR() - rounded down to the nearest integer 返回最大整数，使这个整数小于或等于指定数的数值运算。
+Manhattan distance |x1 - x2| + |y1 - y2|.
+*/
+
+select round(abs(max(LAT_N)-min(LAT_N))+ abs(max(LONG_W)-min(LONG_W)),4)
+from station
+
+-- 10  Weather Observation Station 19
+/*
+Consider P1(a,c) and P2(b,d)  to be two points on a 2D plane where (a,b) are the 
+respective minimum and maximum values of Northern Latitude (LAT_N) and (c,d) are the 
+respective minimum and maximum values of Western Longitude (LONG_W) in STATION.
+
+Query the Euclidean Distance between points P1 and P2 and format your answer to 
+display  decimal digits.
+
+*/
+/*
+Enter your query here.
+这个就是欧几里得距离
+a，b,c,d 先在纸上写下来，一定要对应好
+*/
+select round( sqrt(power(min(LAT_N)-max(LAT_N),2) 
+                +  power(min(LONG_W)-max(LONG_W),2) 
+                  ),
+           4)
+from station
+
+-- 11Weather Observation Station 20
+
+
+/*
+A median is defined as a number separating the higher half of a data set 
+from the lower half. Query the median of the Northern Latitudes (LAT_N) 
+from STATION and round your answer to 4 ecimal places.
+*/
+
+/*
+Enter your query here.
+
+Oracle 有直接的median() 函数
+SELECT ROUND(MEDIAN(Lat_N), 4)
+FROM Station;
+
+但是Mysql 没有直接的中位数函数 需要自己做出来的中位数函数
+下面是计算中位数的模板，对于新的题目，稍作修改就可以使用
+select avg(c.s_score) 
+from(
+       select a.s_score 
+       from score a,score b  表复制一份
+       where a.c_id=b.c_id and a.c_id='02' 额外的条件
+       group by a.s_score
+       having sum(case when a.s_score=b.s_score then 1 else 0 end)
+              >= abs(sum(sign(a.s_score-b.s_score)))
+       )c;
+*/
+
+select round(avg(c.LAT_N),4)
+from(
+    select a.LAT_N 
+    from station a,station b  
+    group by a.LAT_N
+    having sum(case when a.LAT_N=b.LAT_N then 1 else 0 end)
+                  >= abs(sum(sign(a.LAT_N-b.LAT_N)))
+)c; 
+
+-- 12 The Report
+/*
+You are given two tables: Students and Grades. Students contains three 
+columns ID, Name and Marks.
+Grades contains the following data:
+Ketty gives Eve a task to generate a report containing three columns:
+ Name, Grade and Mark. Ketty doesn't want the NAMES of those students
+ who received a grade lower than 8. The report must be in descending 
+ order by grade -- i.e. higher grades are entered first. If there is 
+ more than one student with the same grade (8-10) assigned to them, 
+ order those particular students by their name alphabetically. 
+ Finally, if the grade is lower than 8, use "NULL" as their name and 
+ list them by their grades in descending order. If there is more than 
+ one student with the same grade (1-7) assigned to them, order those particular
+ students by their marks in ascending order.
+
+Sample Output
+
+Maria 10 99
+Jane 9 81
+Julia 9 88 
+Scarlet 8 78
+NULL 7 63
+NULL 7 68
+*/
+/*
+Enter your query here.
+IF 条件的使用  
+IF表达式
+IF(expr1,expr2,expr3)
+
+[如果 expr1 是TRUE (expr1 <> 0 and expr1 <> NULL)，则 IF()的返回值为expr2; 
+否则返回值则为 expr3。IF() 的返回值为数字值或字符串值，具体情况视其所在语境而定。
+
+select if(sva=1,"男","女") as ssva from taname where id = '111';
+
+
+*/
+
+SELECT IF(GRADE < 8, NULL, NAME), GRADE, MARKS
+FROM STUDENTS 
+JOIN GRADES
+WHERE MARKS BETWEEN MIN_MARK AND MAX_MARK
+ORDER BY GRADE DESC, NAME
+
+-- 13 Top Competitors
+
+/*
+Julia just finished conducting a coding contest, and she needs your 
+help assembling the leaderboard! Write a query to print the respective
+ hacker_id and name of hackers who achieved full scores for more than 
+ one challenge. Order your output in descending order by the total number 
+ of challenges in which the hacker earned a full score. If more than one 
+ hacker received full scores in same number of challenges, then sort them 
+ by ascending hacker_id.
+*/
+/*
+Enter your query here.
+
+select h.hacker_id, h.name
+from submissions s
+inner join challenges c
+    on s.challenge_id = c.challenge_id
+inner join difficulty d
+    on c.difficulty_level = d.difficulty_level 
+inner join hackers h
+    on s.hacker_id = h.hacker_id
+    
+where s.score = d.score 
+group by h.hacker_id, h.name
+    having count(s.hacker_id) > 1
+order by count(s.hacker_id) desc, s.hacker_id asc
+
+SELECT h.hacker_id, h.name
+FROM submissions s
+
+JOIN challenges c
+        ON s.challenge_id = c.challenge_id
+JOIN difficulty d
+        ON c.difficulty_level = d.difficulty_level 
+JOIN hackers h
+        ON s.hacker_id = h.hacker_id
+WHERE s.score = d.score 
+
+GROUP BY h.hacker_id, h.name
+        HAVING COUNT(s.hacker_id) > 1
+ORDER BY COUNT(s.hacker_id) DESC, s.hacker_id ASC
+*/
+
+
+SELECT h.hacker_id, h.name
+FROM submissions s
+
+JOIN challenges c
+        ON s.challenge_id = c.challenge_id
+JOIN difficulty d
+        ON c.difficulty_level = d.difficulty_level 
+JOIN hackers h
+        ON s.hacker_id = h.hacker_id
+WHERE s.score = d.score 
+
+GROUP BY h.hacker_id, h.name
+        HAVING COUNT(s.hacker_id) > 1
+ORDER BY COUNT(s.hacker_id) DESC, s.hacker_id ASC
+
+-- 14  Ollivander's Inventory
+/*
+Harry Potter and his friends are at Ollivander's with Ron, finally replacing 
+Charlie's old broken wand.
+Hermione decides the best way to choose is by determining the minimum number 
+of gold galleons needed to buy each non-evil wand of high power and age.
+ Write a query to print the id, age, coins_needed, and power of the wands that
+ Ron's interested in, sorted in order of descending power. If more than one wand 
+ has same power, sort the result in order of descending age.
+
+The following tables contain data on the wands in Ollivander's inventory:
+
+*/
+
+/*
+Enter your query here.
+# 难点： Hermione decides the best way to choose is by determining the minimum number of gold galleons needed to buy each non-evil wand of high power and age
+这个条件必须要有，也就是 得选出来花最少的钱卖的魔杖
+*/
+select id,age, coins_needed, a.power
+from Wands a
+join Wands_Property b
+    on a.code = b.code 
+where b.is_evil = 0 and 
+      a.coins_needed = 
+     (select min(coins_needed) 
+      from Wands as a1 
+      join Wands_Property as b1 
+      on (a1.code = b1.code) 
+      where a1.power = a.power and b1.age = b.age)
+    
+order by a.power desc, b.age desc
 
 
 
 
-
+/**/
+/**/
+/**/
+/**/
+/**/
+/**/
+/**/
+/**/
+/**/
 ###########################################
 ################ 高阶用法 ##################  
 
