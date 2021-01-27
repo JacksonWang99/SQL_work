@@ -1287,14 +1287,142 @@ where b.is_evil = 0 and
     
 order by a.power desc, b.age desc
 
+-- 15 Contest Leaderboard
+/*
+https://www.hackerrank.com/challenges/contest-leaderboard/problem
+You did such a great job helping Julia with her last coding contest challenge that she 
+wants you to work on this one, too!
+The total score of a hacker is the sum of their maximum scores for all of the challenges. 
+Write a query to print the hacker_id, name, and total score of the hackers ordered by the
+ descending score. If more than one hacker achieved the same total score, then sort the 
+ result by ascending hacker_id. Exclude all hackers with a total score of from your result.
+*/
+select h.hacker_id, name, sum(score) as total_score
+from hackers as h 
+
+inner join
+    /* find max_score*/
+    /*在join 表的时候就选择max score, 创建出来一个新只包含最大的分数*/
+    (select hacker_id,  max(score) as score 
+     from submissions 
+     group by challenge_id, hacker_id) as max_score
+
+on h.hacker_id=max_score.hacker_id
+group by h.hacker_id, name
+
+/* don't accept hackers with total_score=0 */
+having total_score > 0
+
+/* finally order as required */
+order by total_score desc, h.hacker_id;
+
+-- 16 Symmetric Pairs
+/*
+You are given a table, Functions, containing two columns: X and Y.
+Two pairs (X1, Y1) and (X2, Y2) are said to be symmetric pairs if X1 = Y2 and X2 = Y1.
+Write a query to output all such symmetric pairs in ascending order by the value of X. 
+List the rows such that X1 ≤ Y1.
+Sample Output
+
+20 20
+20 21
+22 23
+*/
+/*
+Enter your query here.
+注意 查找出来的 symmetric pairs 是一对，但是只要输出(x1,x2)
+第一次遇见这样的题 inner join 的条件也要注意，是直接按照题干要求来的
+*/
+
+SELECT f1.X, f1.Y 
+FROM Functions f1
+INNER JOIN Functions f2 
+ON f1.X=f2.Y AND f1.Y=f2.X
+
+GROUP BY f1.X, f1.Y
+HAVING COUNT(f1.X)>1 or f1.X<f1.Y
+
+ORDER BY f1.X 
+
+-- 17 Challenges
+/*
+Julia asked her students to create some coding challenges. Write a query to 
+print the hacker_id, name, and the total number of challenges created by each 
+student. Sort your results by the total number of challenges in descending order. 
+If more than one student created the same number of challenges, then sort the 
+result by hacker_id. If more than one student created the same number of challenges 
+and the count is less than the maximum number of challenges created, then exclude 
+those students from the result.
+*/
+# 不太会， 有点难
+select a.hacker_id,a.name,count(b.hacker_id)    
+from Hackers a, Challenges b
+WHERE a.hacker_id = b.hacker_id
+GROUP BY a.hacker_id,a.name
+HAVING count(b.hacker_id) not in
+    (select  distinct count(hacker_id) 
+     from Challenges
+     WHERE hacker_id <> a.hacker_id
+     group by hacker_id
+     having count(hacker_id) < 
+                (select max(x.challenge_count) 
+                 from 
+                 (select count(b.challenge_id) as challenge_count                 
+                  from Challenges b 
+                  GROUP BY b.hacker_id) as x ))
+ORDER BY count(b.hacker_id) desc, a.hacker_id 
+
+-- 18  SQL Project Planning
+/*
+You are given a table, Projects, containing three columns: Task_ID, Start_Date 
+and End_Date. It is guaranteed that the difference between the End_Date and the 
+Start_Date is equal to 1 day for each row in the table.
+If the End_Date of the tasks are consecutive, then they are part of the same project. 
+Samantha is interested in finding the total number of different projects completed.
+
+Write a query to output the start and end dates of projects listed by the number 
+of days it took to complete the project in ascending order. If there is more than 
+one project that have the same number of completion days, then order by the start 
+date of the project.
+*/
+/*
+Enter your query here.
+*/
+
+SELECT Start_Date, MIN(End_Date)
+FROM 
+/* Choose start dates that are not end dates of other projects (if a start date is an end date, it is part of the samee project) */
+    (SELECT Start_Date FROM Projects WHERE Start_Date NOT IN (SELECT End_Date FROM Projects)) a,
+/* Choose end dates that are not end dates of other projects */
+    (SELECT end_date FROM PROJECTS WHERE end_date NOT IN (SELECT start_date FROM PROJECTS)) b
+/* At this point, we should have a list of start dates and end dates that don't necessarily correspond with each other */
+/* This makes sure we only choose end dates that fall after the start date, and choosing the MIN means for the particular start_date, we get the closest end date that does not coincide with the start of another task */
+where start_date < end_date
+GROUP BY start_date
+ORDER BY datediff(start_date, MIN(end_date)) DESC, start_date
+
+-- 19 Placements
+/*
+You are given three tables: Students, Friends and Packages. Students contains two columns: ID
+ and Name. Friends contains two columns: ID and Friend_ID (ID of the ONLY best friend). 
+ Packages contains two columns: ID and Salary (offered salary in $ thousands per month).
+
+*/
+
+Select S.Name
+From ( 
+    /*Student 表和 Friends 表连接  使用ID 连接 */
+    Students S join Friends F Using(ID)
+    /*连接 packages 表 使用ID连接*/
+    join Packages P1 on S.ID=P1.ID 
+    /*这里注意，找friend的salary 的时候直接使用 Friend_ID = packages.ID*/
+    join Packages P2 on F.Friend_ID=P2.ID)
+Where P2.Salary > P1.Salary
+Order By P2.Salary;
 
 
 
-/**/
-/**/
-/**/
-/**/
-/**/
+
 /**/
 /**/
 /**/
