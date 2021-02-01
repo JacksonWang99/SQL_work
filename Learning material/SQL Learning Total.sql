@@ -1046,7 +1046,6 @@ select c.company_code, c.founder,
 # 表连接没问题
 from company c
 inner join employee e on e.company_code = c.company_code
-
 # 不太明白group by 为什么需要两个属性
 group by c.company_code,c.founder
 # 直接按照 company_code 进行排序
@@ -1338,10 +1337,8 @@ SELECT f1.X, f1.Y
 FROM Functions f1
 INNER JOIN Functions f2 
 ON f1.X=f2.Y AND f1.Y=f2.X
-
 GROUP BY f1.X, f1.Y
 HAVING COUNT(f1.X)>1 or f1.X<f1.Y
-
 ORDER BY f1.X 
 
 -- 17 Challenges
